@@ -14,12 +14,6 @@ internal sealed partial class GlobalExceptionHandler(IProblemDetailsService prob
 
     public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception, CancellationToken cancellationToken)
     {
-        if (exception is OperationCanceledException && httpContext.RequestAborted.IsCancellationRequested)
-        {
-            httpContext.Response.StatusCode = StatusCodes.Status499ClientClosedRequest;
-            return true;
-        }
-
         var problemDetails = CreateProblemDetails(exception);
         var statusCode = problemDetails.Status!.Value;
         var request = httpContext.Request;
@@ -30,7 +24,14 @@ internal sealed partial class GlobalExceptionHandler(IProblemDetailsService prob
             LogClientError(request.Method, request.Path, statusCode, problemDetails.Extensions[ProblemDetailsEnricher.ErrorCodeKey], problemDetails.Detail);
 
         httpContext.Response.StatusCode = statusCode;
-        return await problemDetailsService.TryWriteAsync(new ProblemDetailsContext { HttpContext = httpContext, ProblemDetails = problemDetails, Exception = exception });
+        var problemContext = new ProblemDetailsContext { HttpContext = httpContext, ProblemDetails = problemDetails, Exception = exception };
+        if (!await problemDetailsService.TryWriteAsync(problemContext)) // Клиент не принимает JSON
+        {
+            ProblemDetailsEnricher.Enrich(problemContext);
+            await TypedResults.Problem(problemDetails).ExecuteAsync(httpContext);
+        }
+
+        return true;
     }
 
     private static ProblemDetails CreateProblemDetails(Exception exception)
