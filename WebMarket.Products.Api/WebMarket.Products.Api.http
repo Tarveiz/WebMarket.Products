@@ -1,0 +1,7 @@
+@WebMarket.Products.Api_HostAddress = http://localhost:5089
+
+### OpenAPI-документ (только Development)
+GET {{WebMarket.Products.Api_HostAddress}}/openapi/v1.json
+Accept: application/json
+
+###
