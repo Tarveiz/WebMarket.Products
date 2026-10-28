@@ -1,9 +1,9 @@
 namespace WebMarket.Products.Common.Settings.Secrets;
 
 /// <summary>
-/// Секрет подключения к основной БД PostgreSQL.
+/// Секрет подключения к PostgreSQL
 /// </summary>
-public sealed class MasterDbSecret
+public sealed class PgSqlSecret
 {
     public required string Host { get; init; }
 

@@ -4,12 +4,12 @@ using WebMarket.Products.Common.Settings.Secrets;
 
 namespace WebMarket.Products.Common.Helpers.Mappers;
 
-public static class MasterDbSecretMapper
+public static class PgSqlSecretMapper
 {
     /// <summary>
     /// Собирает строку подключения к PostgreSQL из секрета.
     /// </summary>
-    public static string ToConnectionString(this MasterDbSecret secret) => new NpgsqlConnectionStringBuilder
+    public static string ToConnectionString(this PgSqlSecret secret) => new NpgsqlConnectionStringBuilder
     {
         Host = secret.Host,
         Port = secret.Port,

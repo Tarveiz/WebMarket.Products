@@ -14,9 +14,9 @@ public static class DataServiceCollectionExtensions
     /// <summary>
     /// Регистрирует доступ к БД через EF Core и Dapper
     /// </summary>
-    public static IServiceCollection AddWebMarketData(this IServiceCollection services, MasterDbSecret masterDbSecret)
+    public static IServiceCollection AddWebMarketData(this IServiceCollection services, PgSqlSecret pgSqlSecret)
     {
-        services.AddSingleton(_ => NpgsqlDataSource.Create(masterDbSecret.ToConnectionString()));
+        services.AddSingleton(_ => NpgsqlDataSource.Create(pgSqlSecret.ToConnectionString()));
 
         services.AddDbContextPool<WebMarketDbContext>((provider, options) => options.UseNpgsql(provider.GetRequiredService<NpgsqlDataSource>()).UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking));
 

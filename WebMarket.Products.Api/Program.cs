@@ -7,10 +7,15 @@ namespace WebMarket.Products.Api;
 
 public class Program
 {
+    private const string VaultSecretsDirectory = "/vault/secrets";
+
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
-        builder.Configuration.AddVaultSecrets();
+        if (Directory.Exists(VaultSecretsDirectory))
+            foreach (var file in Directory.EnumerateFiles(VaultSecretsDirectory, "*.json").Order())
+                builder.Configuration.AddJsonFile(file, optional: true, reloadOnChange: true);
+
         ConfigureServices(builder.Services, builder.Configuration);
 
         var app = builder.Build();
@@ -28,7 +33,7 @@ public class Program
         var allowedOrigins = configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? [];
         services.AddCors(options => options.AddDefaultPolicy(policy => policy.WithOrigins(allowedOrigins).AllowAnyMethod().AllowAnyHeader().SetPreflightMaxAge(TimeSpan.FromHours(1))));
 
-        services.AddWebMarketData(configuration.GetRequiredSection(nameof(MasterDbSecret)).Get<MasterDbSecret>()!);
+        services.AddWebMarketData(configuration.GetRequiredSection(nameof(PgSqlSecret)).Get<PgSqlSecret>()!);
         services.AddCqrsHandlers(typeof(WebMarketDbContext).Assembly);
     }
 
