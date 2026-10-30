@@ -1,7 +1,8 @@
+using WebMarket.DbProvider.Helpers.Extensions;
+using WebMarket.DbProvider.Settings.Secrets;
 using WebMarket.Products.Api.Infrastructure.Extensions;
-using WebMarket.Products.Common.Data;
+using WebMarket.Products.Common.Cqrs;
 using WebMarket.Products.Common.Helpers.Extensions;
-using WebMarket.Products.Common.Settings.Secrets;
 
 namespace WebMarket.Products.Api;
 
@@ -34,7 +35,7 @@ public class Program
         services.AddCors(options => options.AddDefaultPolicy(policy => policy.WithOrigins(allowedOrigins).AllowAnyMethod().AllowAnyHeader().SetPreflightMaxAge(TimeSpan.FromHours(1))));
 
         services.AddWebMarketData(configuration.GetRequiredSection(nameof(PgSqlSecret)).Get<PgSqlSecret>()!);
-        services.AddCqrsHandlers(typeof(WebMarketDbContext).Assembly);
+        services.AddCqrsHandlers(typeof(QueryHandler<,>).Assembly);
     }
 
     private static void Configure(WebApplication app)

@@ -1,5 +1,5 @@
+using WebMarket.DbProvider;
 using WebMarket.Products.Common.Cqrs.Abstractions;
-using WebMarket.Products.Common.Data;
 
 namespace WebMarket.Products.Common.Cqrs;
 
