@@ -23,4 +23,13 @@ public static class ErrorCodes
         public const string RequestFailed = "request_failed";
         public const string InternalError = "internal_error";
     }
+
+    /// <summary>
+    /// Коды сервиса Products
+    /// </summary>
+    public static class Products
+    {
+        public const string InvalidProductId = "invalid_product_id";
+        public const string ProductNotFound = "product_not_found";
+    }
 }
